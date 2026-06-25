@@ -1,0 +1,45 @@
+name: Release KomoCode CLI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        working-directory: packages/cli
+        run: bun install --os="*" --cpu="*"
+
+      - name: Build all platforms
+        working-directory: packages/cli
+        run: bun run script/build.ts
+
+      - name: Collect binaries
+        run: |
+          mkdir -p release
+          cp packages/cli/dist/cli-linux-x64/bin/komocode        release/komocode-linux-x64
+          cp packages/cli/dist/cli-linux-arm64/bin/komocode       release/komocode-linux-arm64
+          cp packages/cli/dist/cli-darwin-x64/bin/komocode        release/komocode-darwin-x64
+          cp packages/cli/dist/cli-darwin-arm64/bin/komocode      release/komocode-darwin-arm64
+          cp packages/cli/dist/cli-windows-x64/bin/komocode.exe   release/komocode-windows-x64.exe
+          chmod +x release/komocode-linux-* release/komocode-darwin-*
+
+      - name: Generate checksums
+        run: |
+          cd release
+          sha256sum * > checksums.txt
+          cat checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
