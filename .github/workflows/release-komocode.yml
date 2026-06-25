@@ -41,6 +41,22 @@ jobs:
           sha256sum * > checksums.txt
           cat checksums.txt
 
+      - name: Upload to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          aws s3 cp release/ s3://komocode-releases/${TAG}/ \
+            --recursive \
+            --endpoint-url https://ebf3d47cf85da68710f5f78a51828090.r2.cloudflarestorage.com \
+            --no-progress
+          aws s3 cp release/ s3://komocode-releases/latest/ \
+            --recursive \
+            --endpoint-url https://ebf3d47cf85da68710f5f78a51828090.r2.cloudflarestorage.com \
+            --no-progress
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
