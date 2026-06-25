@@ -95,7 +95,7 @@ export function DialogKomocodeLogin(props: Props) {
         // Register key with server credential store so session.prompt can use it.
         // Must happen before bootstrap so the catalog sees the credential.
         try {
-          await sdk.client.integration.connect.key(
+          await sdk.client.v2.integration.connect.key(
             { integrationID: "komocode", key },
             { throwOnError: true },
           )

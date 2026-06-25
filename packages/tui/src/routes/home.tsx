@@ -94,8 +94,8 @@ export function Home() {
         <Show when={local.model.current()}>
           {(m) => (
             <box paddingLeft={2} paddingRight={2} height={1} flexDirection="row" gap={1}>
-              <text fg={theme.theme.textDimmed}>{local.model.parsed().provider}</text>
-              <text fg={theme.theme.textDimmed}>/</text>
+              <text fg={theme.theme.textMuted}>{local.model.parsed().provider}</text>
+              <text fg={theme.theme.textMuted}>/</text>
               <text fg={theme.theme.text}>{local.model.parsed().model}</text>
             </box>
           )}
