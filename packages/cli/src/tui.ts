@@ -48,7 +48,7 @@ export function readKomocodeKey(): string | undefined {
 function buildKomocodeProvidersResponse(key: string | undefined) {
   if (!key) return { providers: [], default: {} }
 
-  const gatewayURL = (process.env["KOMOCODE_API_URL"] ?? "http://localhost:8080").replace(/\/$/, "")
+  const gatewayURL = (process.env["KOMOCODE_API_URL"] ?? "http://18.136.89.75:18000").replace(/\/$/, "")
 
   const makeModel = (id: string, name: string) => ({
     id,
