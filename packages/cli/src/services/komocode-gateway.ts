@@ -2,7 +2,7 @@
 // All endpoint shapes live here so changes to the gateway need only touch this file.
 
 export function gatewayURL(): string {
-  return (process.env["KOMOCODE_API_URL"] ?? "http://localhost:8080").replace(/\/$/, "")
+  return (process.env["KOMOCODE_API_URL"] ?? "http://18.136.89.75:18000").replace(/\/$/, "")
 }
 
 export interface MeResponse {
