@@ -42,11 +42,10 @@ jobs:
           cat checksums.txt
 
       - name: Upload to Cloudflare R2
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: auto
         run: |
+          aws configure set aws_access_key_id "${{ secrets.R2_ACCESS_KEY_ID }}"
+          aws configure set aws_secret_access_key "${{ secrets.R2_SECRET_ACCESS_KEY }}"
+          aws configure set default.region auto
           TAG=${GITHUB_REF#refs/tags/}
           aws s3 cp release/ s3://komocode-releases/${TAG}/ \
             --recursive \
