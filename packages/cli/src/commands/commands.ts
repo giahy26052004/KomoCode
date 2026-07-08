@@ -6,24 +6,16 @@ declare const OPENCODE_CLI_NAME: string | undefined
 export const Commands = Spec.make(typeof OPENCODE_CLI_NAME === "string" ? OPENCODE_CLI_NAME : "komocode", {
   description: "KomoCode command line interface",
   commands: [
+    Spec.make("login", { description: "Login with a KomoCode API key" }),
+    Spec.make("logout", { description: "Logout from KomoCode" }),
+    Spec.make("whoami", { description: "Show current KomoCode user and quota" }),
     Spec.make("debug", {
       description: "Debugging and troubleshooting tools",
-      commands: [Spec.make("agents", { description: "List all agents" })],
-    }),
-    Spec.make("komocode", {
-      description: "KomoCode authentication and gateway management",
       commands: [
-        Spec.make("login", { description: "Login with a KomoCode API key" }),
-        Spec.make("logout", { description: "Logout from KomoCode" }),
-        Spec.make("whoami", { description: "Show current KomoCode user and quota" }),
-        Spec.make("debug", {
-          description: "Debug KomoCode connectivity",
-          commands: [
-            Spec.make("auth", { description: "Show authentication status" }),
-            Spec.make("gateway", { description: "Check gateway connectivity" }),
-            Spec.make("quota", { description: "Show quota usage" }),
-          ],
-        }),
+        Spec.make("agents", { description: "List all agents" }),
+        Spec.make("auth", { description: "Show authentication status" }),
+        Spec.make("gateway", { description: "Check gateway connectivity" }),
+        Spec.make("quota", { description: "Show quota usage" }),
       ],
     }),
     Spec.make("migrate", { description: "Migrate v1 data to v2" }),

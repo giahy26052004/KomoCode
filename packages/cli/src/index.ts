@@ -9,18 +9,14 @@ import { Daemon } from "./services/daemon"
 
 const Handlers = Runtime.handlers(Commands, {
   $: () => import("./commands/handlers/default"),
+  login: () => import("./commands/handlers/komocode/login"),
+  logout: () => import("./commands/handlers/komocode/logout"),
+  whoami: () => import("./commands/handlers/komocode/whoami"),
   debug: {
     agents: () => import("./commands/handlers/debug/agents"),
-  },
-  komocode: {
-    login: () => import("./commands/handlers/komocode/login"),
-    logout: () => import("./commands/handlers/komocode/logout"),
-    whoami: () => import("./commands/handlers/komocode/whoami"),
-    debug: {
-      auth: () => import("./commands/handlers/komocode/debug/auth"),
-      gateway: () => import("./commands/handlers/komocode/debug/gateway"),
-      quota: () => import("./commands/handlers/komocode/debug/quota"),
-    },
+    auth: () => import("./commands/handlers/komocode/debug/auth"),
+    gateway: () => import("./commands/handlers/komocode/debug/gateway"),
+    quota: () => import("./commands/handlers/komocode/debug/quota"),
   },
   migrate: () => import("./commands/handlers/migrate"),
   service: {

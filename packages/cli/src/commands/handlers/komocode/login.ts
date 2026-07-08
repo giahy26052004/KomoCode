@@ -8,7 +8,7 @@ import { gatewayURL, maskKey, verifyKey } from "../../../services/komocode-gatew
 
 const KOMOCODE_ID = IntegrationSchema.ID.make("komocode")
 
-export default Runtime.handler(Commands.commands.komocode.commands.login, () =>
+export default Runtime.handler(Commands.commands.login, () =>
   Effect.gen(function* () {
     const cred = yield* Credential.Service
 

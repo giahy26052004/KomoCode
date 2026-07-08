@@ -7,12 +7,12 @@ import { getMe, maskKey } from "../../../services/komocode-gateway"
 
 const KOMOCODE_ID = IntegrationSchema.ID.make("komocode")
 
-export default Runtime.handler(Commands.commands.komocode.commands.whoami, () =>
+export default Runtime.handler(Commands.commands.whoami, () =>
   Effect.gen(function* () {
     const cred = yield* Credential.Service
     const stored = yield* cred.list(KOMOCODE_ID)
     if (stored.length === 0 || stored[0]?.value.type !== "key") {
-      process.stdout.write("Not logged in. Run: komocode komocode login\n")
+      process.stdout.write("Not logged in. Run: komocode login\n")
       return
     }
 

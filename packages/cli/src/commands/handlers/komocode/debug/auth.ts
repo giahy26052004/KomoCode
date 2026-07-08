@@ -7,14 +7,14 @@ import { maskKey } from "../../../../services/komocode-gateway"
 
 const KOMOCODE_ID = IntegrationSchema.ID.make("komocode")
 
-export default Runtime.handler(Commands.commands.komocode.commands.debug.commands.auth, () =>
+export default Runtime.handler(Commands.commands.debug.commands.auth, () =>
   Effect.gen(function* () {
     const cred = yield* Credential.Service
     const stored = yield* cred.list(KOMOCODE_ID)
 
     if (stored.length === 0) {
       process.stdout.write("Status: not authenticated\n")
-      process.stdout.write("Run: komocode komocode login\n")
+      process.stdout.write("Run: komocode login\n")
       return
     }
 

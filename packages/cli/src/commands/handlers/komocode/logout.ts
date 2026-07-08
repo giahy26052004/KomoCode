@@ -6,7 +6,7 @@ import { Runtime } from "../../../framework/runtime"
 
 const KOMOCODE_ID = IntegrationSchema.ID.make("komocode")
 
-export default Runtime.handler(Commands.commands.komocode.commands.logout, () =>
+export default Runtime.handler(Commands.commands.logout, () =>
   Effect.gen(function* () {
     const cred = yield* Credential.Service
     const stored = yield* cred.list(KOMOCODE_ID)
