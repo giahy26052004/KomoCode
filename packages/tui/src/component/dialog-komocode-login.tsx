@@ -1,4 +1,6 @@
 import { createSignal, Show } from "solid-js"
+import { join } from "path"
+import { Global } from "@opencode-ai/core/global"
 import { useDialog } from "../ui/dialog"
 import { useSync } from "../context/sync"
 import { useSDK } from "../context/sdk"
@@ -8,17 +10,11 @@ interface Props {
   onClose?: () => void
 }
 
+// Must match Auth.Service (packages/opencode/src/auth), which uses Global.Path.data
+// (xdg-basedir has no Windows-specific branch, so this is ~/.local/share/opencode
+// even on Windows). A hand-rolled %APPDATA% path here would point at a different file.
 function getAuthJsonPath(): string {
-  if (process.platform === "win32") {
-    const appdata = process.env["APPDATA"]
-    if (appdata) return appdata + "\\opencode\\auth.json"
-    return require("os").homedir() + "\\AppData\\Roaming\\opencode\\auth.json"
-  }
-  if (process.platform === "darwin") {
-    return require("os").homedir() + "/Library/Application Support/opencode/auth.json"
-  }
-  const xdg = process.env["XDG_DATA_HOME"]
-  return (xdg ?? require("os").homedir() + "/.local/share") + "/opencode/auth.json"
+  return join(Global.Path.data, "auth.json")
 }
 
 function saveKeyToAuthJson(key: string): void {
@@ -66,7 +62,7 @@ export function DialogKomocodeLogin(props: Props) {
         setValidating(true)
         setError("")
 
-        const gatewayURL = (process.env["KOMOCODE_API_URL"] ?? "http://localhost:8080").replace(/\/$/, "")
+        const gatewayURL = (process.env["KOMOCODE_API_URL"] ?? "http://18.136.89.75:1000").replace(/\/$/, "")
 
         try {
           const res = await fetch(`${gatewayURL}/v1/me`, {

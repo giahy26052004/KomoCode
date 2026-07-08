@@ -3,9 +3,12 @@ import { TuiConfig } from "@opencode-ai/tui/config"
 import { getComponentCatalogue } from "@opentui/solid"
 import { Effect } from "effect"
 import { Global } from "@opencode-ai/core/global"
-import { readFileSync, appendFileSync } from "fs"
+import { appendFileSync } from "fs"
 import { join } from "path"
 import { homedir } from "os"
+import { getAuthJsonPath, readKomocodeKey } from "./services/komocode-auth"
+
+export { getAuthJsonPath, readKomocodeKey, writeKomocodeKey, clearKomocodeKey } from "./services/komocode-auth"
 
 declare const OPENCODE_CLI_NAME: string | undefined
 
@@ -22,27 +25,6 @@ function dlog(...args: unknown[]) {
     const line = `[${new Date().toISOString()}] ${args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ")}\n`
     appendFileSync(DEBUG_LOG, line, "utf-8")
   } catch {}
-}
-
-export function getAuthJsonPath(): string {
-  if (process.platform === "win32") {
-    return join(process.env["APPDATA"] ?? join(homedir(), "AppData", "Roaming"), "opencode", "auth.json")
-  }
-  if (process.platform === "darwin") {
-    return join(homedir(), "Library", "Application Support", "opencode", "auth.json")
-  }
-  return join(process.env["XDG_DATA_HOME"] ?? join(homedir(), ".local", "share"), "opencode", "auth.json")
-}
-
-export function readKomocodeKey(): string | undefined {
-  try {
-    const raw = readFileSync(getAuthJsonPath(), "utf-8")
-    const auth = JSON.parse(raw) as Record<string, unknown>
-    const entry = auth["komocode"] as { key?: string } | undefined
-    return typeof entry?.key === "string" ? entry.key : undefined
-  } catch {
-    return undefined
-  }
 }
 
 function buildKomocodeProvidersResponse(key: string | undefined) {

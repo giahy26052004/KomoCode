@@ -5,6 +5,7 @@ import * as readline from "node:readline/promises"
 import { Commands } from "../../commands"
 import { Runtime } from "../../../framework/runtime"
 import { gatewayURL, maskKey, verifyKey } from "../../../services/komocode-gateway"
+import { writeKomocodeKey } from "../../../services/komocode-auth"
 
 const KOMOCODE_ID = IntegrationSchema.ID.make("komocode")
 
@@ -49,6 +50,9 @@ export default Runtime.handler(Commands.commands.login, () =>
       value: new Credential.Key({ type: "key", key: apiKey }),
       label: info.email ?? "komocode",
     })
+
+    // Keep auth.json in sync so the TUI (gracefulFetch) also sees this login.
+    writeKomocodeKey(apiKey)
 
     process.stdout.write(`Logged in as ${info.email ?? "unknown"}\n`)
     if (info.plan) process.stdout.write(`Plan: ${info.plan}\n`)
