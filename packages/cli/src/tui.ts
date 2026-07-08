@@ -48,7 +48,7 @@ export function readKomocodeKey(): string | undefined {
 function buildKomocodeProvidersResponse(key: string | undefined) {
   if (!key) return { providers: [], default: {} }
 
-  const gatewayURL = (process.env["KOMOCODE_API_URL"] ?? "http://18.136.89.75:18000").replace(/\/$/, "")
+  const gatewayURL = (process.env["KOMOCODE_API_URL"] ?? "http://18.136.89.75:1000").replace(/\/$/, "")
 
   const makeModel = (id: string, name: string) => ({
     id,
@@ -84,13 +84,14 @@ function buildKomocodeProvidersResponse(key: string | undefined) {
         key,
         options: {},
         models: {
-          "komocode-pro": makeModel("komocode-pro", "KomoCode Pro"),
-          "komocode-fast": makeModel("komocode-fast", "KomoCode Fast"),
-          "komocode-code": makeModel("komocode-code", "KomoCode Code"),
+          "komocode/auto": makeModel("komocode/auto", "KomoCode Auto"),
+          "komocode/fast": makeModel("komocode/fast", "KomoCode Fast"),
+          "komocode/pro": makeModel("komocode/pro", "KomoCode Pro"),
+          "komocode/code": makeModel("komocode/code", "KomoCode Code"),
         },
       },
     ],
-    default: { komocode: "komocode-pro" },
+    default: { komocode: "komocode/auto" },
   }
 }
 
@@ -166,7 +167,7 @@ const gracefulFetch = Object.assign(
     const pathname = new URL(input instanceof Request ? input.url : input).pathname
 
     // Filter provider list to only KomoCode — hides all external providers from model picker
-    if (isKomocodeMode && pathname === "/provider" && response.ok) {
+    if (isKomocodeMode && (pathname === "/provider" || pathname === "/api/provider") && response.ok) {
       const json = await response.json().catch(() => null) as any
       if (json) {
         return Response.json({

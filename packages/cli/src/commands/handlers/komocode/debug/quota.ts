@@ -12,7 +12,7 @@ export default Runtime.handler(Commands.commands.komocode.commands.debug.command
     const cred = yield* Credential.Service
     const stored = yield* cred.list(KOMOCODE_ID)
     if (stored.length === 0 || stored[0]?.value.type !== "key") {
-      process.stdout.write("Not logged in. Run: opencode komocode login\n")
+      process.stdout.write("Not logged in. Run: komocode komocode login\n")
       return
     }
 

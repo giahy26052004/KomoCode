@@ -1299,17 +1299,20 @@ export const layer = Layer.effect(
       Effect.gen(function* () {
         const bridge = yield* EffectBridge.make()
         const cfg = yield* config.get()
-        const modelsDev = yield* modelsDevSvc.get()
-        const catalog = mapValues(modelsDev, fromModelsDevProvider)
-        const database = mapValues(catalog, toPublicInfo)
 
-        // KomoCode: inject built-in provider when running as komocode binary or via env vars
+        // KomoCode: skip the models.dev fetch/cache entirely — whitelabel builds
+        // never show any provider besides KomoCode, so there's no need to pull down
+        // (or keep a stale disk cache of) the full public catalog.
         const isKomocodeMode =
           (typeof OPENCODE_CLI_NAME !== "undefined" && OPENCODE_CLI_NAME === "komocode") ||
           process.env["KOMOCODE_API_URL"] !== undefined ||
           process.env["KOMOCODE_API_KEY"] !== undefined
+        const modelsDev = isKomocodeMode ? {} : yield* modelsDevSvc.get()
+        const catalog = mapValues(modelsDev, fromModelsDevProvider)
+        const database = mapValues(catalog, toPublicInfo)
+
         if (isKomocodeMode) {
-          const baseUrl = (process.env["KOMOCODE_API_URL"] ?? "http://localhost:3000").replace(/\/$/, "")
+          const baseUrl = (process.env["KOMOCODE_API_URL"] ?? "http://18.136.89.75:1000").replace(/\/$/, "")
           const kModel = (id: string, name: string): ModelsDev.Model => ({
             id,
             name,
@@ -1329,9 +1332,10 @@ export const layer = Layer.effect(
             npm: "@ai-sdk/openai-compatible",
             env: ["KOMOCODE_API_KEY"],
             models: {
-              "komocode-pro": kModel("komocode-pro", "KomoCode Pro"),
-              "komocode-fast": kModel("komocode-fast", "KomoCode Fast"),
-              "komocode-code": kModel("komocode-code", "KomoCode Code"),
+              "komocode/auto": kModel("komocode/auto", "KomoCode Auto"),
+              "komocode/fast": kModel("komocode/fast", "KomoCode Fast"),
+              "komocode/pro": kModel("komocode/pro", "KomoCode Pro"),
+              "komocode/code": kModel("komocode/code", "KomoCode Code"),
             },
           }
           database[ProviderV2.ID.make("komocode")] = toPublicInfo(fromModelsDevProvider(komoProvider))
